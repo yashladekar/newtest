@@ -1,0 +1,86 @@
+import "./App.css";
+// import Header from "./components/Header";
+import CurrentWeather from "./components/current-weather/current-weather";
+import Search from "./components/search/Search";
+import { useState } from "react";
+// import axios from "axios";
+
+function App() {
+  // const handleOnSearchChange = (searchData) => {
+  //   // console.log(searchData);
+  //   const [lat, lon] = searchData.value.split(" ");
+  //   console.log(lat, lon);
+
+  //   const response = fetch("http://127.0.0.1:8000/new", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ lat, lon }),
+  //   })
+  //     .then((res) => {
+  //       console.log(res);
+  //       return res.json();
+  //     })
+  //     .then((data) => console.log(data));
+
+  //   // const responseData = response.json();
+  // };
+
+  // const WEATHER_API_URL = "http://api.openweathermap.org/data/2.5";
+  // const WEATHER_API_KEY = "19c9b00e2a4e240f832b0b0746b63f20";
+
+  const [currentWeather, setCurrentWeather] = useState(null);
+
+  // const handleOnSearchChange = (searchData) => {
+  //   const [lat, lon] = searchData.value.split(" ");
+  //   console.log(lat, lon);
+
+  //   const CurrentWeatherFetch = fetch(
+  //     `${WEATHER_API_URL}/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=metric`
+  //   );
+
+  //   Promise.all([CurrentWeatherFetch])
+  //     .then(async (responses) => {
+  //       const [currentWeatherResponse] = responses;
+  //       const weatherResponse = await currentWeatherResponse.json();
+  //       console.log(weatherResponse);
+  //       setCurrentWeather({ city: searchData.label, ...weatherResponse });
+  //     })
+  //     .catch((err) => console.log(err));
+  // };
+  // http://localhost:8000/weather/?lat=40.712776&lon=-74.005974
+  // const DJANGO_API_URL = "http://1200.0.0.1:8000";
+
+  // const DJANGO_API_URL = "http://localhost:8000";
+
+  const handleOnSearchChange = (searchData) => {
+    const [lat, lon] = searchData.value.split(" ");
+    // console.log(lat, lon);
+
+    const CurrentWeatherFetch = fetch(
+      `/weather?lat=${lat}&lon=${lon}`
+    );
+
+    Promise.all([CurrentWeatherFetch])
+      .then(async (responses) => {
+        const [currentWeatherResponse] = responses;
+        const weatherResponse = await currentWeatherResponse.json();
+        console.log(weatherResponse);
+        setCurrentWeather({ city: searchData.label, ...weatherResponse });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  console.log(currentWeather);
+
+  return (
+    <div className="App">
+      {/* <Header /> */}
+      <Search onSearchChange={handleOnSearchChange} />
+      {currentWeather && <CurrentWeather data={currentWeather} />}
+    </div>
+  );
+}
+
+export default App;
